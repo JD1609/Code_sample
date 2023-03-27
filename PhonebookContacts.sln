@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Server", "PhonebookContacts\Server\PhonebookContacts.Server.csproj", "{2247F3E4-E88F-4553-95F3-A045166F75E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Server", "PhonebookContacts\Server\PhonebookContacts.Server.csproj", "{2247F3E4-E88F-4553-95F3-A045166F75E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Client", "PhonebookContacts\Client\PhonebookContacts.Client.csproj", "{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Client", "PhonebookContacts\Client\PhonebookContacts.Client.csproj", "{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Shared", "PhonebookContacts\Shared\PhonebookContacts.Shared.csproj", "{1C1402B9-BE8A-4503-A13A-1D3D90EFA1A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Data", "PhonebookContacts.Data\PhonebookContacts.Data.csproj", "{74D3406B-589F-45DD-932A-195846D0B304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Dto", "PhonebookContacts.Dto\PhonebookContacts.Dto.csproj", "{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +25,14 @@ Global
 		{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C1402B9-BE8A-4503-A13A-1D3D90EFA1A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C1402B9-BE8A-4503-A13A-1D3D90EFA1A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C1402B9-BE8A-4503-A13A-1D3D90EFA1A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C1402B9-BE8A-4503-A13A-1D3D90EFA1A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74D3406B-589F-45DD-932A-195846D0B304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74D3406B-589F-45DD-932A-195846D0B304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74D3406B-589F-45DD-932A-195846D0B304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74D3406B-589F-45DD-932A-195846D0B304}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
