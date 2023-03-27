@@ -1,4 +1,4 @@
-global using PhonebookContacts.Server.Repository;
+global using PhonebookContacts.Server.Repositories;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PhonebookContacts.Server;

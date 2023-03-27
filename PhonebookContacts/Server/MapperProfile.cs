@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using PhonebookContacts.Data.Contact;
+using PhonebookContacts.Dto.Contact;
 
 namespace PhonebookContacts.Server
 {
@@ -6,6 +8,8 @@ namespace PhonebookContacts.Server
     {
         public MapperProfile()
         {
+            CreateMap<ContactDto, ContactData>()
+                .ReverseMap();
         }
     }
 }
