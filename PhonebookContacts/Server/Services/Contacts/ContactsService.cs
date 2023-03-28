@@ -4,6 +4,8 @@ using PhonebookContacts.Dto.Contact;
 using PhonebookContacts.Dto.Response;
 using System.Data;
 using PhonebookContacts.Data.Exceptions;
+using PhonebookContacts.Dto.Filters;
+using System.Linq;
 
 namespace PhonebookContacts.Server.Services.Contacts
 {
@@ -28,6 +30,45 @@ namespace PhonebookContacts.Server.Services.Contacts
             var response = new GenericResponse<List<ContactDto>>();
 
             var contacts = await _context.Contacts.ToListAsync(cancellationToken);
+
+            if (contacts == null)
+                return response;
+
+            // Mapping can be used already when loading from DB but for possible work with objects I do it here
+            var contactsDto = contacts
+                .Select(p => _mapper.Map<ContactDto>(p))
+                .ToList();
+
+            response.Data = contactsDto;
+
+
+            return response;
+        }
+
+        public async Task<GenericResponse<List<ContactDto>>> GetFilteredContactsAsync(ContactsFilter filter, CancellationToken cancellationToken)
+        {
+            var response = new GenericResponse<List<ContactDto>>();
+
+            var contacts = await _context.Contacts
+                // Name filter
+                .Where(c => string.IsNullOrEmpty(filter.Name) 
+                    ? true 
+                    : c.FirstName.Contains(filter.Name) || c.LastName.Contains(filter.Name) || (c.FirstName + " " + c.LastName).Contains(filter.Name) || (c.LastName + " " + c.FirstName).Contains(filter.Name))
+                // Phone filter
+                .Where(c => string.IsNullOrEmpty(filter.Phone)
+                    ? true
+                    : c.PhoneNumber.Contains(filter.Phone))
+                // Birth from filter
+                .Where(c => filter.BirthFrom == null
+                    ? true
+                    : c.BirthDate >= filter.BirthFrom)
+                // Birth to filter
+                .Where(c => filter.BirthTo == null
+                    ? true
+                    : c.BirthDate <= filter.BirthTo)
+                // IsActive filter
+                .Where(c => filter.IsActive ? c.IsActive : false)
+                .ToListAsync(cancellationToken);
 
             if (contacts == null)
                 return response;

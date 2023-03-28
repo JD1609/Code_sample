@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PhonebookContacts.Dto.Contact;
+using PhonebookContacts.Dto.Filters;
 using PhonebookContacts.Dto.Response;
 using PhonebookContacts.Server.Services.Contacts;
 
@@ -26,6 +27,16 @@ namespace PhonebookContacts.Server.Controllers
             return await CallSafe(async () =>
             {
                 return await _contactsService.GetContactsAsync(cancellationToken);
+            });
+        }
+
+        [HttpPost("filtered")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenericResponse<List<ContactDto>>))]
+        public async Task<ActionResult<GenericResponse<List<ContactDto>>>> GetFilteredContactsAsync(ContactsFilter filter, CancellationToken cancellationToken)
+        {
+            return await CallSafe(async () =>
+            {
+                return await _contactsService.GetFilteredContactsAsync(filter, cancellationToken);
             });
         }
 
