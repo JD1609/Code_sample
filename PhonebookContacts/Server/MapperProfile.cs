@@ -8,7 +8,7 @@ namespace PhonebookContacts.Server
     {
         public MapperProfile()
         {
-            CreateMap<ContactDto, ContactData>()
+            CreateMap<ContactData, ContactDto>()
                 .ReverseMap();
         }
     }

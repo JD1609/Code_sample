@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PhonebookContacts.Server;
 using Microsoft.AspNetCore.Mvc;
+using PhonebookContacts.Data.Response;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +28,9 @@ builder.Services.AddSingleton<IMapper>(sp =>
 // Swagger/OpenAPI
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Warehouse.Data.Response.Response), 200));
-    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Warehouse.Data.Response.Response), 404));
-    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Warehouse.Data.Response.Response), 500));
+    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Response), 200));
+    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Response), 404));
+    options.Filters.Add(new ProducesResponseTypeAttribute(typeof(Response), 500));
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -63,7 +64,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();
