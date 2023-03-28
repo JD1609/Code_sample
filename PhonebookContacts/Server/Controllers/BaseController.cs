@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PhonebookContacts.Data.Exceptions;
-using PhonebookContacts.Data.Response;
+using PhonebookContacts.Dto.Response;
 
 namespace PhonebookContacts.Server.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PhonebookContacts.Data.Contact;
 using PhonebookContacts.Dto.Contact;
-using PhonebookContacts.Data.Response;
+using PhonebookContacts.Dto.Response;
 using System.Data;
 using PhonebookContacts.Data.Exceptions;
 

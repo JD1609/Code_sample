@@ -1,4 +1,4 @@
-﻿namespace PhonebookContacts.Data.Response
+﻿namespace PhonebookContacts.Dto.Response
 {
     public class GenericResponse<T> : Response
     {

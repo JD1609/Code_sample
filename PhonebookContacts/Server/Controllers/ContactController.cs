@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PhonebookContacts.Dto.Contact;
-using PhonebookContacts.Data.Response;
+using PhonebookContacts.Dto.Response;
 using PhonebookContacts.Server.Services.Contacts;
 
 namespace PhonebookContacts.Server.Controllers

@@ -1,5 +1,5 @@
 ﻿using PhonebookContacts.Dto.Contact;
-using PhonebookContacts.Data.Response;
+using PhonebookContacts.Dto.Response;
 
 namespace PhonebookContacts.Server.Services.Contacts
 {

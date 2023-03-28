@@ -4,7 +4,7 @@ global using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using PhonebookContacts.Server;
 using Microsoft.AspNetCore.Mvc;
-using PhonebookContacts.Data.Response;
+using PhonebookContacts.Dto.Response;
 using PhonebookContacts.Server.Services.Contacts;
 
 var builder = WebApplication.CreateBuilder(args);
