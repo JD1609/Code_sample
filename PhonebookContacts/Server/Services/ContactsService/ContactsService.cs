@@ -32,6 +32,7 @@ namespace PhonebookContacts.Server.Services.ContactsService
             if (contacts == null)
                 return response;
 
+            // Mapping can be used already when loading from DB but for possible work with objects I do it here
             var contactsDto = contacts
                 .Select(p => _mapper.Map<ContactDto>(p))
                 .ToList();
@@ -53,6 +54,7 @@ namespace PhonebookContacts.Server.Services.ContactsService
             if (contacts == null)
                 throw new KeyNotFoundException("Contact not found");
 
+            // Mapping can be used already when loading from DB but for possible work with objects I do it here
             var contactDto = _mapper.Map<ContactDto>(contacts);
 
             response.Data = contactDto;
@@ -85,7 +87,6 @@ namespace PhonebookContacts.Server.Services.ContactsService
 
 
             _context.Contacts.Entry(_mapper.Map<ContactData>(contactDto)).State = EntityState.Modified;
-
             await _context.SaveChangesAsync(cancellationToken);
 
 
@@ -104,7 +105,6 @@ namespace PhonebookContacts.Server.Services.ContactsService
                 throw new KeyNotFoundException("Contact not found");
 
             _context.Contacts.Remove(contact);
-
             await _context.SaveChangesAsync(cancellationToken);
 
 
