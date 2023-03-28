@@ -1,9 +1,11 @@
 global using PhonebookContacts.Server.Repositories;
+global using Microsoft.EntityFrameworkCore;
+
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using PhonebookContacts.Server;
 using Microsoft.AspNetCore.Mvc;
 using PhonebookContacts.Data.Response;
+using PhonebookContacts.Server.Services.ContactsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,10 @@ builder.Services.AddSingleton<IMapper>(sp =>
 
     return config.CreateMapper();
 });
+
+
+// Services
+builder.Services.AddScoped<IContactsService, ContactsService>();
 
 
 // Swagger/OpenAPI
