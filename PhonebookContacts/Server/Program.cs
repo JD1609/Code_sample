@@ -5,7 +5,7 @@ using AutoMapper;
 using PhonebookContacts.Server;
 using Microsoft.AspNetCore.Mvc;
 using PhonebookContacts.Data.Response;
-using PhonebookContacts.Server.Services.ContactsService;
+using PhonebookContacts.Server.Services.Contacts;
 
 var builder = WebApplication.CreateBuilder(args);
 

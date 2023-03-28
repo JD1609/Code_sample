@@ -1,7 +1,7 @@
 ﻿using PhonebookContacts.Dto.Contact;
 using PhonebookContacts.Data.Response;
 
-namespace PhonebookContacts.Server.Services.ContactsService
+namespace PhonebookContacts.Server.Services.Contacts
 {
     public interface IContactsService
     {

@@ -5,7 +5,7 @@ using PhonebookContacts.Data.Response;
 using System.Data;
 using PhonebookContacts.Data.Exceptions;
 
-namespace PhonebookContacts.Server.Services.ContactsService
+namespace PhonebookContacts.Server.Services.Contacts
 {
     public class ContactsService : IContactsService
     {

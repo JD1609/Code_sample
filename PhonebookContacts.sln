@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Server", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Client", "PhonebookContacts\Client\PhonebookContacts.Client.csproj", "{2E6787EA-ACFA-4AC5-B361-9B174D63CF84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Data", "PhonebookContacts.Data\PhonebookContacts.Data.csproj", "{74D3406B-589F-45DD-932A-195846D0B304}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Data", "PhonebookContacts.Data\PhonebookContacts.Data.csproj", "{74D3406B-589F-45DD-932A-195846D0B304}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonebookContacts.Dto", "PhonebookContacts.Dto\PhonebookContacts.Dto.csproj", "{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookContacts.Dto", "PhonebookContacts.Dto\PhonebookContacts.Dto.csproj", "{DF648ED7-D599-4A86-BDE7-2E01CE5BBC20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
