@@ -22,13 +22,6 @@
     else
     {
         <div class="content">
-            @if (submitted)
-            {
-                <div class="alert @messageCssClass" style="margin-top: 5px; border-radius: 10px;" role="alert">
-                    @message
-                </div>
-            }
-
             <EditForm Model="@contact" OnValidSubmit="HandleButtonOnClick">
                 <DataAnnotationsValidator />
                 <div class="content-item">
@@ -114,20 +107,15 @@
     [Parameter]
     public int Id { get; set; }
     private ContactDto contact = new ContactDto();
-    private string message = string.Empty;
-    private string messageCssClass = string.Empty;
     private bool submitted = false;
     private bool deleteContact = false;
     private bool buttonDisabled = false;
     private bool isModalOpen = false;
     private bool isLoading = true;
-    private Timer timer = new Timer();
     private ElementReference inputElement;
 
     protected override async Task OnInitializedAsync()
     {
-        timer.Elapsed += new ElapsedEventHandler(NavigateToContactsList);
-        timer.Interval = 2000;
         var response = await _contactsService.GetContactAsync(Id);
 
         if (response == null)
@@ -182,24 +170,11 @@
         else
             (response, success) = await _contactsService.UpdateContactAsync(contact);
 
-        message = response!.Message;
         submitted = true;
 
         if (success)
-        {
-            messageCssClass = "alert-success";
-            timer.Enabled = true;
-        }
+            NavigationManager.NavigateTo("contacts");
         else
-        {
-            messageCssClass = "alert-danger";
             buttonDisabled = false;
-        }
-    }
-
-    private void NavigateToContactsList(object? source, ElapsedEventArgs e)
-    {
-        timer.Enabled = false;
-        NavigationManager.NavigateTo("contacts");
     }
 }
