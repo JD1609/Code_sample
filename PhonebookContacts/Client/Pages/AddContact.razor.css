@@ -1,0 +1,26 @@
+﻿.content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+}
+
+.content-item {
+    display: flex;
+    gap: 30px;
+}
+
+.input-item {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.birth-email {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    width: 100%;
+    padding: 5px;
+}

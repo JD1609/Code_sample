@@ -1,0 +1,116 @@
+﻿@page "/contacts/add"
+@using System.ComponentModel.DataAnnotations;
+@using PhonebookContacts.Client.Services.Contacts;
+@using PhonebookContacts.Dto.Contact;
+@using System.Timers;
+@inject IContactsService _contactsService;
+@inject NavigationManager NavigationManager
+<PageTitle>Add contact</PageTitle>
+
+<h1>Create contact</h1>
+
+<div>
+    <div class="content">
+        @if (submitted)
+        {
+            <div class="alert @messageCssClass" style="margin-top: 5px; border-radius: 10px;" role="alert">
+                @message
+            </div>
+        }
+
+        <EditForm Model="@contact" OnValidSubmit="HandleAddContact">
+            <DataAnnotationsValidator/>
+            <div class="content-item">
+                <div class="input-item">
+                    <label for="first-name">First name*:</label>
+                    <InputText id="first-name" @bind-Value="contact.FirstName" type="text" class="form-control" />
+                    <ValidationMessage For="@(() => contact.FirstName)" />
+                </div>
+                <div class="input-item">
+                    <label for="last-name">Last name*:</label>
+                    <InputText id="last-name" @bind-Value="contact.LastName" type="text" class="form-control" />
+                    <ValidationMessage For="@(() => contact.LastName)" />
+                </div>
+            </div>
+    
+            <div class="content-item">
+                <div class="input-item">
+                    <label for="phone">Phone number*:</label>
+                    <InputText id="phone" @bind-Value="contact.PhoneNumber" type="tel" class="form-control" />
+                    <ValidationMessage For="@(() => contact.PhoneNumber)" />
+                </div>
+                <div class="input-item">
+                    <label for="email">E-mail*:</label>
+                    <InputText id="email" @bind-Value="contact.Email" type="email" class="form-control" />
+                    <ValidationMessage For="@(() => contact.Email)" />
+                </div>
+            </div>
+    
+            <div class="birth-email">
+                <div style="display: flex; align-items: end; gap: 80px;">
+                    <div>
+                        <label>Birth date*:</label>
+                        <InputDate @bind-Value="contact.BirthDate" class="form-control" />
+                        <ValidationMessage For="@(() => contact.BirthDate)" />
+                    </div>
+
+                    <div style="min-width: 85px; height: 38px; gap: 5px; display: flex; align-items: center; padding: 0px 0px 0px 3px; cursor: pointer;" @onclick="CheckBoxClick">
+                        <InputCheckbox style="cursor: pointer; width: 16px; height: 16px;" @bind-Value="@contact.IsActive" />
+                        <label style="cursor: pointer;">Is active</label>
+                    </div>
+                </div>
+                
+                <div>
+                    <button type="submit" class="btn btn-success" disabled="@buttonDisabled">Create</button>
+                </div>
+            </div>
+        </EditForm>
+
+    </div>
+</div>
+
+ 
+
+@code {
+    private ContactDto contact = new ContactDto { BirthDate = DateTime.Now };
+    private string message = string.Empty;
+    private string messageCssClass = string.Empty;
+    private bool buttonDisabled = false;
+    private bool submitted = false;
+    private Timer timer = new Timer();
+
+    protected override void OnInitialized()
+    {
+        timer.Elapsed += new ElapsedEventHandler(NavigateToContactsList);
+        timer.Interval = 2000;
+    }
+
+    private void CheckBoxClick() => contact.IsActive = !contact.IsActive;
+
+    private async Task HandleAddContact()
+    {
+        buttonDisabled = true;
+        var (response, success) = await _contactsService.AddContactAsync(contact);
+
+        message = response!.Message;
+        submitted = true;
+
+        if (success)
+        {
+            messageCssClass = "alert-success";
+            contact = new ContactDto { BirthDate = DateTime.Now };
+            timer.Enabled = true;
+        }
+        else
+        {
+            messageCssClass = "alert-danger";
+            buttonDisabled = false;
+        }
+    }
+
+    private void NavigateToContactsList(object source, ElapsedEventArgs e)
+    {
+        timer.Enabled = false;
+        NavigationManager.NavigateTo("contacts");
+    }
+}
