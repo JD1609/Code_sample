@@ -5,7 +5,6 @@ using PhonebookContacts.Dto.Response;
 using System.Data;
 using PhonebookContacts.Data.Exceptions;
 using PhonebookContacts.Dto.Filters;
-using System.Linq;
 
 namespace PhonebookContacts.Server.Services.Contacts
 {
@@ -53,11 +52,11 @@ namespace PhonebookContacts.Server.Services.Contacts
                 // Name filter
                 .Where(c => string.IsNullOrEmpty(filter.Name) 
                     ? true 
-                    : c.FirstName.Contains(filter.Name) || c.LastName.Contains(filter.Name) || (c.FirstName + " " + c.LastName).Contains(filter.Name) || (c.LastName + " " + c.FirstName).Contains(filter.Name))
+                    : (c.FirstName.ToLower() + " " + c.LastName.ToLower()).Contains(filter.Name) || (c.LastName.ToLower() + " " + c.FirstName.ToLower()).Contains(filter.Name))
                 // Phone filter
                 .Where(c => string.IsNullOrEmpty(filter.Phone)
                     ? true
-                    : c.PhoneNumber.Contains(filter.Phone))
+                    : c.PhoneNumber.Replace(" ", string.Empty).Replace("-", string.Empty).Contains(filter.Phone.Replace(" ", string.Empty).Replace("-", string.Empty)))
                 // Birth from filter
                 .Where(c => filter.BirthFrom == null
                     ? true
@@ -113,6 +112,7 @@ namespace PhonebookContacts.Server.Services.Contacts
             await _context.Contacts.AddAsync(contact, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
+            response.Message = "Contact successfully created.";
             return response;
         }
 
@@ -131,6 +131,7 @@ namespace PhonebookContacts.Server.Services.Contacts
             await _context.SaveChangesAsync(cancellationToken);
 
 
+            response.Message = "Contact successfully updated.";
             return response;
         }
 
@@ -149,6 +150,7 @@ namespace PhonebookContacts.Server.Services.Contacts
             await _context.SaveChangesAsync(cancellationToken);
 
 
+            response.Message = "Contact successfully deleted.";
             return response;
         }
     }
