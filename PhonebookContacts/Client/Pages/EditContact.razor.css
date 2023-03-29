@@ -1,0 +1,55 @@
+﻿.content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+}
+
+.content-item {
+    display: flex;
+    gap: 30px;
+}
+
+.input-item {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.birth-email {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    width: 100%;
+    padding: 5px;
+}
+
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 8px solid #36304a;
+        border-color: #36304a transparent #36304a transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

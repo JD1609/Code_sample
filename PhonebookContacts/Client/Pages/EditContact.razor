@@ -1,0 +1,205 @@
+﻿@page "/contacts/{id:int}"
+@using System.ComponentModel.DataAnnotations;
+@using PhonebookContacts.Client.Services.Contacts;
+@using PhonebookContacts.Dto.Contact;
+@using System.Timers;
+@using PhonebookContacts.Dto.Response;
+@using System.Text.RegularExpressions;
+@using System.Text;
+@inject IContactsService _contactsService;
+@inject NavigationManager NavigationManager
+<PageTitle>Update contact</PageTitle>
+
+<h1>Update contact</h1>
+
+<div>
+    @if (isLoading)
+    {
+        <div style="display:flex; width: 100%; justify-content: center; margin-top: 200px;">
+            <div class="lds-dual-ring"></div>
+        </div>
+    }
+    else
+    {
+        <div class="content">
+            @if (submitted)
+            {
+                <div class="alert @messageCssClass" style="margin-top: 5px; border-radius: 10px;" role="alert">
+                    @message
+                </div>
+            }
+
+            <EditForm Model="@contact" OnValidSubmit="HandleButtonOnClick">
+                <DataAnnotationsValidator />
+                <div class="content-item">
+                    <div class="input-item">
+                        <label for="first-name">First name*:</label>
+                        <InputText id="first-name" @bind-Value="@contact.FirstName" type="text" class="form-control" />
+                        <ValidationMessage For="@(() => contact.FirstName)" />
+                    </div>
+                    <div class="input-item">
+                        <label for="last-name">Last name*:</label>
+                        <InputText id="last-name" @bind-Value="contact.LastName" type="text" class="form-control" />
+                        <ValidationMessage For="@(() => contact.LastName)" />
+                    </div>
+                </div>
+
+                <div class="content-item">
+                    <div class="input-item">
+                        <label for="phone">Phone number*:</label>
+                        <input @ref="inputElement" class="form-control" @oninput="UpdatePhoneNumber" value="@contact.PhoneNumber" maxlength="11" />
+                        <ValidationMessage For="@(() => contact.PhoneNumber)" />
+                    </div>
+                    <div class="input-item">
+                        <label for="email">E-mail*:</label>
+                        <InputText id="email" @bind-Value="contact.Email" type="email" class="form-control" />
+                        <ValidationMessage For="@(() => contact.Email)" />
+                    </div>
+                </div>
+
+                <div class="birth-email">
+                    <div style="display: flex; align-items: end; gap: 80px;">
+                        <div>
+                            <label>Birth date*:</label>
+                            <InputDate @bind-Value="contact.BirthDate" class="form-control" />
+                            <ValidationMessage For="@(() => contact.BirthDate)" />
+                        </div>
+
+                        <div style="min-width: 85px; height: 38px; gap: 5px; display: flex; align-items: center; padding: 0px 0px 0px 3px;">
+                            <label>Age: @(DateTime.Now.Year - contact.BirthDate.Year)</label>
+                        </div>
+
+                        <div style="min-width: 85px; height: 38px; gap: 5px; display: flex; align-items: center; padding: 0px 0px 0px 3px; cursor: pointer;" @onclick="CheckBoxClick">
+                            <InputCheckbox style="cursor: pointer; width: 16px; height: 16px;" @bind-Value="@contact.IsActive" />
+                            <label style="cursor: pointer;">Is active</label>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction: row; justify-content: space-between; gap: 30px;">
+                        <div>
+                            <button type="button" class="btn btn-danger" disabled="@buttonDisabled" @onclick="@(() => { isModalOpen = true; })">Delete</button>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-warning" disabled="@buttonDisabled" @onclick="@(() => { deleteContact = false; })">Update</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:@(isModalOpen ? "flex" : "none"); align-items: center; position: absolute; width: 100vw; left: 0; top: 0; height: 100vh; justify-content: center; background-color: rgba(0,0,0,0.5)">
+                    <div style="width: 500px; z-index: 1055; overflow-x: hidden; overflow-y: auto; outline: 0;" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete contact</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete this contact?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger" @onclick="SubmitDelete">Delete contact</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@(() => { isModalOpen = false; })">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private ContactDto contact = new ContactDto();
+    private string message = string.Empty;
+    private string messageCssClass = string.Empty;
+    private bool submitted = false;
+    private bool deleteContact = false;
+    private bool buttonDisabled = false;
+    private bool isModalOpen = false;
+    private bool isLoading = true;
+    private Timer timer = new Timer();
+    private ElementReference inputElement;
+
+    protected override async Task OnInitializedAsync()
+    {
+        timer.Elapsed += new ElapsedEventHandler(NavigateToContactsList);
+        timer.Interval = 2000;
+        var response = await _contactsService.GetContactAsync(Id);
+
+        if (response == null)
+            NavigationManager.NavigateTo("contacts");
+
+        contact = response!;
+        isLoading = false;
+    }
+
+    private void CheckBoxClick() => contact.IsActive = !contact.IsActive;
+
+    private void SubmitDelete()
+    {
+        deleteContact = true;
+        isModalOpen = false;
+    }
+
+    private void UpdatePhoneNumber(ChangeEventArgs e)
+    {
+        string input = e?.Value?.ToString() ?? string.Empty;
+        string maskedValue = MaskPhoneNumber(input);
+        contact.PhoneNumber = maskedValue;
+    }
+
+    private string MaskPhoneNumber(string input)
+    {
+        StringBuilder sb = new StringBuilder();
+        int digitCount = 0;
+
+        foreach (char c in input)
+        {
+            if (char.IsDigit(c))
+            {
+                digitCount++;
+                sb.Append(c);
+
+                if (digitCount == 3 || digitCount == 6)
+                    sb.Append(" ");
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    private async Task HandleButtonOnClick()
+    {
+        buttonDisabled = true;
+        var (response, success) = (new Response(), true);
+
+        if (deleteContact)
+            (response, success) = await _contactsService.DeleteContactAsync(contact.Id);
+        else
+            (response, success) = await _contactsService.UpdateContactAsync(contact);
+
+        message = response!.Message;
+        submitted = true;
+
+        if (success)
+        {
+            messageCssClass = "alert-success";
+            timer.Enabled = true;
+        }
+        else
+        {
+            messageCssClass = "alert-danger";
+            buttonDisabled = false;
+        }
+    }
+
+    private void NavigateToContactsList(object? source, ElapsedEventArgs e)
+    {
+        timer.Enabled = false;
+        NavigationManager.NavigateTo("contacts");
+    }
+}
