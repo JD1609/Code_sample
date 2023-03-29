@@ -2,14 +2,16 @@
 using System.Net.Http.Json;
 using PhonebookContacts.Dto.Response;
 using PhonebookContacts.Dto.Filters;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace PhonebookContacts.Client.Services.Contacts
 {
     public class ContactsService : IContactsService
     {
         private readonly HttpClient _http;
-        
-        
+
+
         #region Ctor
         public ContactsService(HttpClient _http)
         {
@@ -17,38 +19,83 @@ namespace PhonebookContacts.Client.Services.Contacts
         }
         #endregion
 
-        public async Task<List<ContactDto>> GetContactsAsync()
+        public async Task<List<ContactDto>?> GetContactsAsync()
         {
-            var response = await _http.GetFromJsonAsync<GenericResponse<List<ContactDto>>>($"api/contacts");
+            var response = await _http.GetAsync($"api/contacts");
 
-            return response?.Data ?? new List<ContactDto>();
+            if (response.IsSuccessStatusCode)
+                return response.Content.ReadFromJsonAsync<GenericResponse<List<ContactDto>>>().Result!.Data!;
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result!;
+            Console.WriteLine(failedResponse.Message);
+
+            return null;
         }
 
-        public async Task<List<ContactDto>> GetFilteredContactsAsync(ContactsFilter filter)
+        public async Task<List<ContactDto>?> GetFilteredContactsAsync(ContactsFilter filter)
         {
-            var response = await _http.PostAsJsonAsync("api/contacts/filtered", filter);
+            var stringContent = new StringContent(JsonConvert.SerializeObject(filter), Encoding.UTF8, "application/json");
+            var response = await _http.PostAsync("api/contacts/filtered", stringContent);
 
-            return response.Content.ReadFromJsonAsync<GenericResponse<List<ContactDto>>>().Result.Data;
+            if (response.IsSuccessStatusCode)
+                return response.Content.ReadFromJsonAsync<GenericResponse<List<ContactDto>>>().Result!.Data!;
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result!;
+            Console.WriteLine(failedResponse.Message);
+
+            return null;
         }
 
-        public async Task<ContactDto> GetContactAsync(int id)
+        public async Task<ContactDto?> GetContactAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _http.GetAsync($"api/contacts/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return response.Content.ReadFromJsonAsync<GenericResponse<ContactDto>>().Result!.Data;
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result!;
+            Console.WriteLine(failedResponse.Message);
+
+            return null;
         }
 
-        public async Task<bool> AddContactAsync(ContactDto contact)
+        public async Task<(Response, bool)> AddContactAsync(ContactDto contact)
         {
-            throw new NotImplementedException();
+            var response = await _http.PostAsJsonAsync("api/contacts", contact);
+
+            if (response.IsSuccessStatusCode)
+                return (response.Content.ReadFromJsonAsync<Response>().Result!, true);
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result!;
+            Console.WriteLine(failedResponse.Message);
+
+            return (failedResponse, false);
         }
 
-        public async Task<bool> UpdateContactAsync(int id, ContactDto contact)
+        public async Task<(Response, bool)> UpdateContactAsync(ContactDto contact)
         {
-            throw new NotImplementedException();
+            var response = await _http.PutAsJsonAsync($"api/contacts/{contact.Id}", contact);
+
+            if (response.IsSuccessStatusCode)
+                return (response.Content.ReadFromJsonAsync<Response>().Result!, true);
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result;
+            Console.WriteLine(failedResponse!.Message);
+
+            return (failedResponse, false);
         }
 
-        public async Task<bool> DeleteContactAsync(int id)
+        public async Task<(Response, bool)> DeleteContactAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _http.DeleteAsync($"api/contacts/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return (response.Content.ReadFromJsonAsync<Response>().Result!, true);
+
+            var failedResponse = response.Content.ReadFromJsonAsync<Response>().Result;
+            Console.WriteLine(failedResponse!.Message);
+
+            return (failedResponse, false);
         }
     }
 }
