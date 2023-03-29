@@ -7,8 +7,8 @@
 
 <PageTitle>Contacts</PageTitle>
 
+<div class="content">
 
-<div id="content" class="align-content-center">
     <h1>Contacts (@contactsData.Count)</h1>
 
     <div style="display: flex; align-items: end; justify-content: space-between;">
@@ -68,7 +68,7 @@
         <tbody>
             @foreach (var contact in contactsData)
             {
-                <tr @onclick="(() => OpenContact(contact.Id))">
+                <tr @onclick="(() => OpenContacts(contact.Id))">
                     <td>@contact.Id</td>
                     <td>@contact.FirstName</td>
                     <td>@contact.LastName</td>
@@ -130,11 +130,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        contactsData = await _contactsService.GetContactsAsync();
+        var response = await _contactsService.GetContactsAsync();
+
+        if (response == null)
+            isError = true;
+        else
+            contactsData = response;
+
+
         isLoading = false;
     }
 
-    private void OpenContact(int id) => NavigationManager.NavigateTo($"contacts/{id}");
+    private void OpenContacts(int id) => NavigationManager.NavigateTo($"contacts/{id}");
     private void NavigateTo(string url) => NavigationManager.NavigateTo(url);
     private void CheckBoxClick() => searchIsActive = !searchIsActive;
 
@@ -144,24 +151,22 @@
         isLoading = true;
         isError = false;
 
-        try
+
+
+        var response = await _contactsService.GetFilteredContactsAsync(new ContactsFilter
         {
-            contactsData = await _contactsService.GetFilteredContactsAsync(new ContactsFilter
-            {
-                Name = searchName,
-                Phone = searchPhone,
-                BirthFrom = searchBirthDateFrom,
-                BirthTo = searchBirthDateTo,
-                IsActive = searchIsActive
-            });
-        }
-        catch (Exception e)
-        {
+            Name = searchName,
+            Phone = searchPhone,
+            BirthFrom = searchBirthDateFrom,
+            BirthTo = searchBirthDateTo,
+            IsActive = searchIsActive
+        });
+
+        if (response == null)
             isError = true;
-        }
-        finally
-        {
-            isLoading = false;
-        }
+        else
+            contactsData = response;
+
+        isLoading = false;
     }
 }
