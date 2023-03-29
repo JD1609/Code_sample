@@ -1,0 +1,167 @@
+﻿@page "/contacts"
+@using PhonebookContacts.Client.Services.Contacts;
+@using PhonebookContacts.Dto.Contact;
+@using PhonebookContacts.Dto.Filters;
+@inject IContactsService _contactsService;
+@inject NavigationManager NavigationManager
+
+<PageTitle>Contacts</PageTitle>
+
+
+<div id="content" class="align-content-center">
+    <h1>Contacts (@contactsData.Count)</h1>
+
+    <div style="display: flex; align-items: end; justify-content: space-between;">
+        <div id="filters">
+            <div>
+                <InputText @bind-Value="searchName" class="form-control" placeholder="Search by name..." />
+            </div>
+
+            <div>
+                <InputText @bind-Value="searchPhone" class="form-control" placeholder="Search by phone..." />
+            </div>
+
+            <div class="advanced-filters">
+                <div>
+                    <label>Birth date from:</label>
+                    <InputDate @bind-Value="searchBirthDateFrom" class="form-control" style="height: 50%;" />
+                </div>
+
+                <div>
+                    <label>Birth date To:</label>
+                    <InputDate @bind-Value="searchBirthDateTo" class="form-control" style="height: 50%;" />
+                </div>
+
+                <div style="min-width: 85px; height: 38px; gap: 5px; align-items: center; display:flex; padding: 0px 0px 0px 3px; cursor: pointer;" @onclick="CheckBoxClick">
+                    <InputCheckbox style="cursor: pointer; width: 16px; height: 16px;" @bind-Value="@searchIsActive" />
+                    <label style="cursor: pointer;">Is active</label>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" @onclick="FilterContacts">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-success" @onclick="@(() => NavigateTo("contacts/add"))">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+                <span>&nbsp;Add contact</span>
+            </button>
+        </div>
+    </div>
+
+    <table class="mt-3" style="@(contactsData.Count == 0 ? "" : "margin-bottom: 5%;")">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Birth date</th>
+                <th>Phone</th>
+                <th>E-mail</th>
+                <th>Is active</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in contactsData)
+            {
+                <tr @onclick="(() => OpenContact(contact.Id))">
+                    <td>@contact.Id</td>
+                    <td>@contact.FirstName</td>
+                    <td>@contact.LastName</td>
+                    <td>@contact.BirthDate.ToString("dd.MM.yyyy")</td>
+                    <td>@contact.PhoneNumber</td>
+                    <td>@contact.Email</td>
+                    <td id="active-status">
+                        @if (contact.IsActive)
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check2" viewBox="0 0 16 16">
+                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                            </svg>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (isLoading)
+    {
+        <div style="display:flex; width: 100%; justify-content: center; margin-top: 200px;">
+            <div class="lds-dual-ring"></div>
+        </div>
+    }
+    else
+    {
+        if (isError)
+        {
+            <div class="alert alert-danger" style="margin-top: 5px; border-radius: 10px;" role="alert">
+                Oops! Something went wrong.
+            </div>
+        }
+        else if (contactsData.Count <= 0)
+        {
+            <div class="alert alert-warning" style="margin-top: 5px; border-radius: 10px;" role="alert">
+                No contact meets the specified filters.
+            </div>
+        }
+    }
+</div>
+
+
+@code {
+    private List<ContactDto> contactsData = new();
+    private string? searchName;
+    private string? searchPhone;
+    private DateTime? searchBirthDateFrom;
+    private DateTime? searchBirthDateTo;
+    private bool searchIsActive;
+    private bool isLoading = true;
+    private bool isError = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        contactsData = await _contactsService.GetContactsAsync();
+        isLoading = false;
+    }
+
+    private void OpenContact(int id) => NavigationManager.NavigateTo($"contacts/{id}");
+    private void NavigateTo(string url) => NavigationManager.NavigateTo(url);
+    private void CheckBoxClick() => searchIsActive = !searchIsActive;
+
+    private async Task FilterContacts()
+    {
+        contactsData = new();
+        isLoading = true;
+        isError = false;
+
+        try
+        {
+            contactsData = await _contactsService.GetFilteredContactsAsync(new ContactsFilter
+            {
+                Name = searchName,
+                Phone = searchPhone,
+                BirthFrom = searchBirthDateFrom,
+                BirthTo = searchBirthDateTo,
+                IsActive = searchIsActive
+            });
+        }
+        catch (Exception e)
+        {
+            isError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

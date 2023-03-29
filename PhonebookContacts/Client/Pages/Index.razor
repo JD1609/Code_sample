@@ -1,7 +1,18 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>Phonebook contacts</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Welcome to phonebook!</h1>
 
-Welcome to your new app.
+<p>Here you can manage your phone numbers.</p>
+
+<button @onclick="NavigateToContacts" class="btn btn-primary">Go to numbers</button>
+
+@code {
+
+    private void NavigateToContacts()
+    {
+        NavigationManager.NavigateTo("contacts");
+    }
+}
