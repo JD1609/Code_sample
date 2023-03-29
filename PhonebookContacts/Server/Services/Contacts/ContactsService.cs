@@ -67,7 +67,7 @@ namespace PhonebookContacts.Server.Services.Contacts
                     ? true
                     : c.BirthDate <= filter.BirthTo)
                 // IsActive filter
-                .Where(c => filter.IsActive ? c.IsActive : false)
+                .Where(c => filter.IsActive ? c.IsActive : true)
                 .ToListAsync(cancellationToken);
 
             if (contacts == null)
