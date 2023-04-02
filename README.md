@@ -20,3 +20,9 @@
 - validation of the email that it is in the correct format
 - display the current age of the contact, automatically on the fly recalculated when I change the BirthDate field
 
+
+
+![image](https://user-images.githubusercontent.com/74508566/229358617-8539f979-0ea1-4644-bf73-ee68bd755595.png)
+
+
+![image](https://user-images.githubusercontent.com/74508566/229358688-4a984318-3435-4200-a555-408324f79fd9.png)
