@@ -21,6 +21,14 @@
 - display the current age of the contact, automatically on the fly recalculated when I change the BirthDate field
 
 
+## Quick start
+The application uses the entity framework to work with the database and uses migration. Therefore, before using the application, it is necessary to set up database migrations.
+
+1. ) Change the connection string in **`appsettings.json`**
+2. ) In the server application directory, run the **`dotnet ef database update`** CLI command to apply the database migration
+> For instalation Entity Framework use CLI command `dotnet tool install --global dotnet-ef`
+3. ) After applying migrations, you can run the application in VS
+
 
 ![image](https://user-images.githubusercontent.com/74508566/229358617-8539f979-0ea1-4644-bf73-ee68bd755595.png)
 
